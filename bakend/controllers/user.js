@@ -1,4 +1,5 @@
 const { User } = require("../models");
+const { Message } = require('../models');
 const bcrypt = require('bcrypt');
 const webToken = require('jsonwebtoken');
 const validator = require('validator');
@@ -60,4 +61,26 @@ exports.logIn = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }))
     }
+};
+
+exports.find = (req, res, next ) => {
+    User.findOne ({ where: { id: req.params.id } })
+    .then(profil => res.status(200).json(profil))
+    .catch(error => res.status(400).json({ error }));
+};
+
+exports.findAllMyMessages = (req, res, next) => {
+    Message.findAll ({ where: { idUSER: req.params.id } })
+    .then(messages => res.status(200).json(messages))
+    .catch(error => res.status(400).json({ error }));
+};
+
+exports.delete = (req, res, next) => {
+    Message.destroy({ where: { idUSER: req.params.id} })
+    .then( User.destroy({
+         where: { id: req.params.id} 
+        }))
+        .then(() => res.status(200).json({ message: 'objet supprimé !'}))
+        .catch(error => res.status(500).json({ error }))
+    .catch(error => res.status(500).json({ error }))
 };

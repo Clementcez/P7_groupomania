@@ -1,5 +1,6 @@
-const { Message } = require('../models')
-const fs = require('fs')
+const { Message } = require('../models');
+const { Comment } = require('../models');
+const fs = require('fs');
 
 exports.createMessage = (req, res, next) =>{
     Message.create ({
@@ -9,6 +10,16 @@ exports.createMessage = (req, res, next) =>{
         attachement: req.file ? `${req.protocol}://${req.get('host')}/img/${req.file.filename}` : null
     })
     .then(() => res.status(201).json({ message: 'Objet enregister' }))
+    .catch(error => res.status(400).json({ error }));
+};
+
+exports.createComment = (req, res, next) =>{
+    Comment.create ({
+        idMESSAGE: req.body.messageId,
+        idUSER: req.body.userId,
+        content: req.body.content,
+    })
+    .then(() => res.status(201).json({ message: 'Commentaire enregister' }))
     .catch(error => res.status(400).json({ error }));
 };
 
@@ -51,6 +62,12 @@ exports.deleteMessage = (req, res, next) => {
 exports.readAllMessages = (req, res, next) => {
     Message.findAll()
     .then(messages => res.status(200).json(messages))
+    .catch(error => res.status(400).json({ error }));
+};
+
+exports.readAllComments = (req, res ,next) => {
+    Comment.findAll ({ where: { idMESSAGE: req.params.id } })
+    .then(comments => res.status(200).json(comments))
     .catch(error => res.status(400).json({ error }));
 };
 
