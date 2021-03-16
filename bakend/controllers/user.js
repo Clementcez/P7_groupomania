@@ -1,5 +1,6 @@
 const { User } = require("../models");
 const { Message } = require('../models');
+const { Comment } = require('../models');
 const bcrypt = require('bcrypt');
 const webToken = require('jsonwebtoken');
 const validator = require('validator');
@@ -76,11 +77,13 @@ exports.findAllMyMessages = (req, res, next) => {
 };
 
 exports.delete = (req, res, next) => {
-    Message.destroy({ where: { idUSER: req.params.id} })
-    .then( User.destroy({
-         where: { id: req.params.id} 
-        }))
-        .then(() => res.status(200).json({ message: 'objet supprimé !'}))
-        .catch(error => res.status(500).json({ error }))
+    Comment.destroy({ where: { idUSER: req.params.id} })
+    .then(
+        Message.destroy({ where: { idUSER: req.params.id} })
+            .then( User.destroy({ where: { id: req.params.id} }))
+                .then(() => res.status(200).json({ message: 'objet supprimé !'}))
+                .catch(error => res.status(500).json({ error }))
+            .catch(error => res.status(500).json({ error }))
+    )
     .catch(error => res.status(500).json({ error }))
 };

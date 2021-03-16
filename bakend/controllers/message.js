@@ -1,15 +1,20 @@
 const { Message } = require('../models');
 const { Comment } = require('../models');
+const { User } = require('../models');
 const fs = require('fs');
 
 exports.createMessage = (req, res, next) =>{
-    Message.create ({
-        idUSER: req.body.userId,
-        title: req.body.title,
-        content: req.body.content,
-        attachement: req.file ? `${req.protocol}://${req.get('host')}/img/${req.file.filename}` : null
+    User.findOne({ where:{ id: req.body.userId }})
+    .then(user => {
+        Message.create ({
+            idUSER: req.body.userId,
+            title: 'message de' + ' ' + user.username,
+            content: req.body.content,
+            attachement: req.file ? `${req.protocol}://${req.get('host')}/img/${req.file.filename}` : null
+        })
+        .then(() => res.status(201).json({ message: 'Objet enregister' }))
+        .catch(error => res.status(400).json({ error }));
     })
-    .then(() => res.status(201).json({ message: 'Objet enregister' }))
     .catch(error => res.status(400).json({ error }));
 };
 
@@ -33,7 +38,6 @@ exports.modifMessage = (req, res, next) => {
             })
         }
         Message.update({
-            title: req.body.title ? req.body.title : message.title,
             content: req.body.content ? req.body.content : message.content,
             attachement: `${req.protocol}://${req.get('host')}/img/${req.file.filename}`
         },
@@ -70,21 +74,3 @@ exports.readAllComments = (req, res ,next) => {
     .then(comments => res.status(200).json(comments))
     .catch(error => res.status(400).json({ error }));
 };
-
-// exports.readMessage = (req, res, next) => {
-
-// };
-
-// app.post("/message", (req, res) => {
-//     Message.create ({
-//         idUSERS: "1",
-//         title: "mon titre",
-//         content: "salut les amies c'est David Lafarge",
-//     })
-//     .catch((error) => {
-//         if (error){
-//             console.log(error)
-//         }
-//     });
-//     res.send("créé");
-// });
