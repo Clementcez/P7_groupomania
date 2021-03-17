@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require('body-parser');
 const path = require('path');
 
 const messageRoutes = require('./routes/message');
@@ -13,8 +12,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 app.use('/img', express.static(path.join(__dirname, 'img')));
 

@@ -1,10 +1,17 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
+<div id="app">
+        <img alt="groupomania" src="assets/icon-left-font-monochrome-black.png">
+    <div id="nav">
+      <router-link to="/">Connexion</router-link> |
+      <router-link to="/profil">Profil</router-link>
+    </div>
+    <router-view/>
+</div>
 </template>
+
+<script>
+
+</script>
 
 <style>
 #app {
@@ -12,7 +19,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+}
+
+#app > img {
+  width: 20%;
 }
 
 #nav {
@@ -25,6 +35,6 @@
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: #b95442;
 }
 </style>
