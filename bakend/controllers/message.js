@@ -22,7 +22,7 @@ exports.createComment = (req, res, next) =>{
     Comment.create ({
         idMESSAGE: req.body.messageId,
         idUSER: req.body.userId,
-        content: req.body.content,
+        comContent: req.body.comContent,
     })
     .then(() => res.status(201).json({ message: 'Commentaire enregister' }))
     .catch(error => res.status(400).json({ error }));

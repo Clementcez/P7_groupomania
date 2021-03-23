@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id',
             },
         },
-        content: {
+        comContent: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {

@@ -50,6 +50,7 @@ exports.logIn = (req, res, next) => {
                         }
                         res.status(200).json({
                             userId: user.id,
+                            admin: user.isAdmin,
                             token: webToken.sign(
                                 { userId: user.id },
                                 'TOKEN_SECRET',
@@ -64,7 +65,13 @@ exports.logIn = (req, res, next) => {
     }
 };
 
-exports.find = (req, res, next ) => {
+exports.findWithUsername = (req, res, next ) => {
+    User.findOne ({ where: { username: req.params.username } })
+    .then(profil => res.status(200).json(profil))
+    .catch(error => res.status(400).json({ error }));
+};
+
+exports.findWithId = (req, res, next ) => {
     User.findOne ({ where: { id: req.params.id } })
     .then(profil => res.status(200).json(profil))
     .catch(error => res.status(400).json({ error }));
@@ -73,6 +80,12 @@ exports.find = (req, res, next ) => {
 exports.findAllMyMessages = (req, res, next) => {
     Message.findAll ({ where: { idUSER: req.params.id } })
     .then(messages => res.status(200).json(messages))
+    .catch(error => res.status(400).json({ error }));
+};
+
+exports.findAllMyComments = (req, res, next) => {
+    Comment.findAll ({ where: { idUSER: req.params.id } })
+    .then(comments => res.status(200).json(comments))
     .catch(error => res.status(400).json({ error }));
 };
 

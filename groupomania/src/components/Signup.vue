@@ -1,0 +1,98 @@
+<template>
+ <div class="signupBlock">
+   <form class="signup" @submit.prevent="signup">
+     <h1 class="authTitle">Inscription</h1>
+     <label>Email :</label>
+     <input required v-model="email" type="email" placeholder="Email"/>
+      <label>Pseudo :</label>
+     <input required v-model="username" type="text" placeholder="Pseudo"/>
+     <label>Mot de passe :</label>
+     <input required v-model="password" type="password" placeholder="Password"/>
+     <button type="submit">S'inscrire</button>
+     <p v-if="message">{{ message }}</p>
+   </form>
+ </div>
+</template>
+
+<script>
+import axios from 'axios'
+
+export default {
+  data () {
+    return {
+      email: '',
+      username: '',
+      password: '',
+      message: ''
+    }
+  },
+  methods: {
+    signup: function () {
+      const dataUser = {
+        'email': this.email,
+        'username': this.username,
+        'password': this.password
+      }
+
+      const headers = {
+        'Content-Type': 'application/json',
+      }
+
+      axios.post('http://localhost:3000/api/auth/signup', dataUser, headers)
+        .then(res =>{
+            console.log(res.status)
+            if(res.status == 201){
+                axios.post('http://localhost:3000/api/auth/login', dataUser, headers)
+                .then(resp =>{
+                    localStorage.setItem('user', JSON.stringify( resp.data ))
+                    this.$router.push('/')
+                })
+            }
+        })
+        .catch( error => {
+          console.log(error)
+          this.message = 'Mauvais identifiants'
+        })
+      }
+  }
+}
+</script>
+
+<style scoped>
+.signupBlock{
+  display: flex;
+  justify-content: center;
+  transition-duration: 0.5s;
+  width: 30%;
+  margin: 2rem 0 4rem 0;
+  border: black solid 2px;
+  border-radius: 20px;
+}
+
+.signupBlock:hover{
+  width: 40%;
+}
+
+.signup{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 60%;
+}
+
+.signup > label{
+  font-size: 1.5rem;
+}
+
+.signup > input{
+  height: 1rem;
+  font-size: 1rem;
+  transition-duration: 0.5s;
+  border-radius: 10px 0 10px 0;
+}
+
+.signup > input:focus{
+  height: 3rem;
+  font-size: 1.5rem;
+}
+</style>
