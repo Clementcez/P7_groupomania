@@ -1,16 +1,16 @@
 <template>
   <div id="messageForm">
-      <p>
-          <label for="content">Nouveau message</label>
-          <input id="content" type="text" name="content">
-
-          <input id="file" type="file" ref="file" v-on:change="handleFileUpload()">
-          <input v-on:click="submitFile()" type="submit"  value="Ajouter">
-      </p>
+    <label for="content">Nouveau message</label>
+    <input id="content" type="text" name="content">
+    <input id="file" type="file" ref="file" v-on:change="handleFileUpload">
+    <input v-on:click="submitPost" type="submit"  value="Ajouter">
   </div>
 </template>
 
 <script>
+
+import axios from 'axios'
+
 export default {
   name: 'messageForm',
   data: function () {
@@ -20,7 +20,6 @@ export default {
       file: ''
     }
   },
-  el: '#form',
   beforeMount() {
     const user = JSON.parse(localStorage.getItem('user'))
     this.userId = user.userId
@@ -30,9 +29,8 @@ export default {
     handleFileUpload () {
       this.file = this.$refs.file.files[0]
     },
-    submitFile () {
+    submitPost () {
       const content = document.getElementById('content').value
-      const axios = require('axios')
       const formData = new FormData()
       formData.append('image', this.file)
       formData.append('userId', this.userId)
@@ -44,17 +42,13 @@ export default {
             Authorization: 'Bearer' + ' ' + this.token
           }
         })
-        .then(function () {
-          console.log('SUCCESS!!')
+        .then(response => {
+          if(response.status == 201){
+            this.$emit('new-message')
+          }
         })
-        .catch(function () {
-          console.log('FAILURE!!')
-        })
+        .catch( console.error() )
     }
   }
 }
 </script>
-
-<style>
-
-</style>

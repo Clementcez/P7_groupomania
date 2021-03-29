@@ -1,6 +1,7 @@
 const { Message } = require('../models');
 const { Comment } = require('../models');
 const { User } = require('../models');
+const sequelize = require('sequelize')
 const fs = require('fs');
 
 exports.createMessage = (req, res, next) =>{
@@ -63,10 +64,21 @@ exports.deleteMessage = (req, res, next) => {
     .catch(error => res.status(500).json({ error }))
 };
 
-exports.readAllMessages = (req, res, next) => {
-    Message.findAll()
-    .then(messages => res.status(200).json(messages))
-    .catch(error => res.status(400).json({ error }));
+exports.readAllPosts = (req, res, next) => {
+    Message.hasMany(Comment, {foreignKey: 'idMESSAGE'})
+    User.hasMany(Comment, {foreignKey: 'idUSER'})
+    Comment.belongsTo(User, {foreignKey: 'idUSER'})
+
+    Message.findAll({
+        include: [{model: Comment, include: { model: User }}],
+        order:  [['id','DESC']],
+        limit: 20
+    })
+    .then(messages => res.status(200).json({ messages }))
+    .catch(error => {
+        console.log(error),
+        res.status(400).json({ error })
+    });
 };
 
 exports.readAllComments = (req, res ,next) => {

@@ -37,6 +37,7 @@ export default {
       axios.post('http://localhost:3000/api/auth/login', dataUser, headers)
         .then(resp =>{
           localStorage.setItem('user', JSON.stringify( resp.data ))
+          this.$emit('login')
           this.$router.push('/')
         })
         .catch( error => {

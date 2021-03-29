@@ -96,13 +96,21 @@ export default {
   },
   methods: {
     deleteProfil () {
-      axios.delete('http://localhost:3000/api/auth/' + this.userId, {
+      if (confirm("Etes vous sur de vouloir supprimer votre profil ?")){
+        axios.delete('http://localhost:3000/api/auth/' + this.userId, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer' + ' ' + this.token
           }
         })
-      .then(alert('Profil supprimé'))
+      .then(
+        alert('Profil supprimé'),
+        this.$emit('logout')
+        )
+      }
+      else{
+        return
+      }
     },
     findProfil () {
         if( this.findUser.user.pseudo){

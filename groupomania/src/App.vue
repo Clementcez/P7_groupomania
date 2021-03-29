@@ -8,27 +8,32 @@
           <router-link v-if="!isLogged" to="/connexion">Connexion</router-link><span v-if="isLogged"> | </span>
           <a v-if="isLogged" @click="logout" href=""> Déconnexion</a>
         </div>
-        <router-view/>
+        <router-view @logout="logout" @login="logged"/>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
+  name: 'App',
   data () {
     return {
       isLogged: ''
     }
   },
-    mounted() {
-    localStorage.getItem('user') ? this.isLogged = 1 : this.$router.push('/connexion')
+  beforeMount() {
+ 	window.addEventListener('beforeunload', this.logout)
   },
   methods: {
-    logout () {
+    logged(){
+      this.isLogged = 1
+    },
+    logout() {
       localStorage.clear()
       this.isLogged = ''
       this.$router.push('/connexion')
-    }
+    },
   }
 }
 </script>

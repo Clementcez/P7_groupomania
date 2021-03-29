@@ -7,7 +7,10 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    beforeEnter: (to, from, next) => {
+      localStorage.getItem('user') ? next() : next({ name: 'Connexion'})
+    }
   },
   {
     path: '/connexion',
@@ -17,7 +20,10 @@ const routes = [
   {
     path: '/profil',
     name: 'Profil',
-    component: Profil
+    component: Profil,
+    beforeEnter: (to, from, next) => {
+      localStorage.getItem('user') ? next() : next({ name: 'Connexion'})
+    }
   }
 ]
 
