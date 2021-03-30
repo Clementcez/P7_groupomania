@@ -8,33 +8,33 @@ const pseudoRegex =  /[\"\'\s\/\:]/;
 
 exports.signUp = (req, res, next) => {
     if( !validator.isEmail(req.body.email)){
-        throw 'Email non valable !';
+        throw res.status(500).json({ error:"Email non valide" });
     }
     else if ( !validator.isStrongPassword(req.body.password)){
-        throw 'Mot de pass non valable !';
+        throw res.status(500).json({ error:"Mot de passe non valide" });
     } 
     else if( ( pseudoRegex.test(req.body.username) || req.body.username == "" )){
-        throw 'Pseudo non valable !';
+        throw res.status(500).json({ error:"Pseudo non valide" });
     }
     else{
         bcrypt.hash(req.body.password, 10)
-            .then(hash => {
-                User.create({
-                    email : req.body.email,
-                    username: req.body.username,
-                    password: hash,
-                    isAdmin: "0"
-                })
-                .then(() => res.status(201).json({ message: 'Utilisateur créé!'}))
-                .catch(error => res.status(500).json({ error, message:"utilisateur existant" })) 
+        .then(hash => {
+            User.create({
+                email : req.body.email,
+                username: req.body.username,
+                password: hash,
+                isAdmin: "0"
             })
-            .catch(error => res.status(500).json({ error })) 
-        }
+            .then(() => res.status(201).json({ message: 'Utilisateur créé!'}))
+            .catch(() => res.status(500).json({ error:"utilisateur existant" })) 
+        })
+        .catch(error => res.status(500).json({ error })) 
+    }
 };
 
 exports.logIn = (req, res, next) => {
     if( !validator.isEmail (req.body.email)){
-        throw 'Email non valable !';
+        throw res.status(500).json({ error:"Email non valide" });
     }
     else{
         User.findOne({ where: { email: req.body.email} })

@@ -1,7 +1,6 @@
 const { Message } = require('../models');
 const { Comment } = require('../models');
 const { User } = require('../models');
-const sequelize = require('sequelize')
 const fs = require('fs');
 
 exports.createMessage = (req, res, next) =>{
@@ -31,8 +30,8 @@ exports.createComment = (req, res, next) =>{
 
 exports.modifMessage = (req, res, next) => {
     Message.findOne ({ where: { id: req.params.id} })
-    .then( message => {
-        if(req.file !== undefined ){
+    .then( response => {
+        if(response.file){
             const filename = message.attachement.split('/img/')[1];
             fs.unlink(`img/${filename}`, (err) => {
                 if (err) throw err;
@@ -52,15 +51,24 @@ exports.modifMessage = (req, res, next) => {
 
 exports.deleteMessage = (req, res, next) => {
     Message.findOne ({ where: { id: req.params.id} })
-    .then( message => {
-            const filename = message.attachement.split('/img/')[1];
+    .then( response => {
+        if(response.attachement){
+            const filename = response.attachement.split('/img/')[1];
             fs.unlink(`img/${filename}`, (err) => {
                 if (err) throw err;
             })
-            Message.destroy ({ where: { id: req.params.id} })
-            .then(() => res.status(200).json({ message: 'objet supprimé !'}))
-            .catch(error => res.status(500).json({ error }))
+        }
+        Message.destroy ({ where: { id: response.id} })
+        .then(() => res.status(200).json({ message: 'objet supprimé !'}))
+        .catch(error => res.status(500).json({ error }))
     })
+    .catch(error =>res.status(500).json({ error }))
+};
+
+exports.deleteComment = (req, res, next) => {
+    console.log(req.params)
+    Comment.destroy ({ where: { id: req.params.id} })
+    .then(() => res.status(200).json({ message: 'objet supprimé !'}))
     .catch(error => res.status(500).json({ error }))
 };
 
