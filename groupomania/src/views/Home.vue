@@ -77,7 +77,6 @@ export default {
         }
       })
       .then(response =>{
-        console.log(response.data)
         for (let item of response.data.messages){
           const postDate = new Date(item.createdAt)
           const post = {
@@ -259,7 +258,7 @@ button:hover{
   padding: initial;
 }
 
-.com:active .slideButton{
+.com:hover .slideButton{
   width: auto;
 }
 

@@ -5,11 +5,10 @@
             <p>For Groupomania with love</p>
         </div>
         <div id="nav">
-          <!-- <router-link to="/">Home</router-link><span v-if="isLogged"> | </span>
-          <router-link v-if="isLogged" to="/profil">Profil</router-link><span v-if="!isLogged"> | </span>
-          <router-link v-if="!isLogged" to="/connexion">Connexion</router-link><span v-if="isLogged"> | </span>
-          <a v-if="isLogged" @click="logout" href=""> Déconnexion</a> -->
-          <p>{{islogged}}</p>
+          <router-link v-if="logged" to="/">Home</router-link><span v-if="logged"> | </span>
+          <router-link v-if="logged" to="/profil">Profil</router-link>
+          <router-link v-if="!logged" to="/connexion">Connexion</router-link><span v-if="logged"> | </span>
+          <a v-if="logged" @click="logout" href=""> Déconnexion</a>
         </div>
         <div>
             <p>CONNECT-E ©</p>
@@ -22,8 +21,22 @@ export default {
     name: 'Footer',
     data () {
         return {
-            props: ['islogged']
+            logged: false
         }
+    },
+    watch:{
+        $route(to, from) {
+            this.logged = localStorage.getItem('user') ? true : false
+        }
+    },
+    methods: {
+        logout() {
+        localStorage.clear()
+        this.$router.push('/connexion')
+        },
+    },
+    beforeMount(){
+        this.logged = localStorage.getItem('user') ? true : false
     }
 }
 </script>
@@ -32,6 +45,7 @@ export default {
 footer{
     display: flex;
     justify-content: space-around;
+    align-items: center;
     height: 5rem;
 }
 
@@ -42,5 +56,26 @@ footer{
 
 .logo{
     width: 20%;
+}
+
+#nav {
+    padding: 30px;
+    margin-right: 12%;
+}
+
+#nav a {
+    transition-duration: 0.3s;
+    font-size: 1rem;
+    color: #2c3e50;
+    text-decoration: unset;
+}
+
+#nav a:hover{
+    color: #D1515A;
+}
+
+#nav a.router-link-exact-active {
+    color: #D1515A;
+    text-decoration: underline;
 }
 </style>

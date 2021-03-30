@@ -2,14 +2,9 @@
   <div class="colorBack">
     <div id="app">
           <img alt="Groupomania logo" src="./assets/icon-left-font-monochrome-black.png">
-        <div id="nav">
-          <router-link to="/">Home</router-link><span v-if="isLogged"> | </span>
-          <router-link v-if="isLogged" to="/profil">Profil</router-link><span v-if="!isLogged"> | </span>
-          <router-link v-if="!isLogged" to="/connexion">Connexion</router-link><span v-if="isLogged"> | </span>
-          <a v-if="isLogged" @click="logout" href=""> Déconnexion</a>
-        </div>
-        <router-view @logout="logout" @login="logged"/>
-        <Footer v-bind:islogged='0'/>
+        <Header/>
+        <router-view/>
+        <Footer/>
     </div>
   </div>
 </template>
@@ -17,29 +12,14 @@
 <script>
 
 import Footer from '@/components/Footer.vue'
+import Header from '@/components/Header.vue'
+
 
 export default {
   name: 'App',
   components: {
+    Header,
     Footer
-  },
-  data () {
-    return {
-      isLogged: ''
-    }
-  },
-  methods: {
-    logged(){
-      this.isLogged = 1
-    },
-    logout() {
-      localStorage.clear()
-      this.isLogged = 0
-      this.$router.push('/connexion')
-    },
-  },
-  beforeMount() {
- 	  window.addEventListener('beforeunload', this.logout)
   },
 }
 </script>
@@ -53,6 +33,9 @@ export default {
 }
 
 #app {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 80%;
   min-height: 80vh;
   margin: 0 auto 3rem auto;
@@ -65,23 +48,8 @@ export default {
 }
 
 #app > img {
+  margin: inherit;
+  margin-bottom: auto;
   width: 40%;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  transition-duration: 0.3s;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2c3e50;
-  text-decoration: unset;
-}
-
-#nav a.router-link-exact-active {
-  color: #D1515A;
-  text-decoration: underline;
 }
 </style>

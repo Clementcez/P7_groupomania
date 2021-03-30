@@ -220,6 +220,6 @@ export default {
 }
 
 .profil{
-  margin-top: 3rem;
+  flex-grow: 1;
 }
 </style>

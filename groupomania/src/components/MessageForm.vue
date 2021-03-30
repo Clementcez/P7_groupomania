@@ -96,7 +96,7 @@ export default {
 .labelFile {
   display: inline-block;
   width: 6rem;
-  height: 2rem;
+  height: 1.9rem;
   padding-top: 0.6rem;
   font-size: 1rem;
   opacity: 1;

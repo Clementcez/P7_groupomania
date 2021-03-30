@@ -1,7 +1,7 @@
 <template>
   <div class="auth">
-    <Login @login="logged"/>
-    <Signup @login="logged"/>
+    <Login/>
+    <Signup/>
   </div>
 </template>
 
@@ -15,11 +15,6 @@ export default {
     Login,
     Signup
   },
-  methods:{
-    logged(){
-      this.$emit('login')
-    }
-  }
 }
 </script>
 
