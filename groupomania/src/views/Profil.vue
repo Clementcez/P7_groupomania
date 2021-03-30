@@ -28,21 +28,21 @@
         </div>
 
            <div class="userInfo" v-if="findUser.messages.length">
-              <p>Messages de {{ findUser.user.pseudo }} :</p>
               <div class="message" v-for="item in findUser.messages" :key="item.id">
                 <p>{{ item.content }}<span> date : </span>{{ item.createdAt }}</p>
                 <img :src="item.attachement" alt="">
               </div>
+              <p>Messages de {{ findUser.user.pseudo }} :</p>
             </div>
             <div v-else>
               <p>Pas de messages trouvé ...</p>
             </div>
 
           <div class="userInfo" v-if="findUser.comments.length">
-            <p>Commentaires de {{ findUser.user.pseudo }} :</p>
             <div class="comment" v-for="item in findUser.comments" :key="item.id">
               <p>{{ item.comContent }}<span> date : </span>{{ item.createdAt }}</p>
             </div>
+            <p>Commentaires de {{ findUser.user.pseudo }} :</p>
           </div>
           <div v-else>
             <p>Pas de commentaires trouvé ...</p>
@@ -113,55 +113,56 @@ export default {
       }
     },
     findProfil () {
-        if( this.findUser.user.pseudo){
-          this.cancelSearch()
+      if( this.findUser.user.pseudo){
+        this.cancelSearch()
+      }
+      axios.get('http://localhost:3000/api/auth/profil/' + this.findUser.username, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + ' ' + this.token
         }
-        axios.get('http://localhost:3000/api/auth/profil/' + this.findUser.username, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer' + ' ' + this.token
+      })
+      .then(resp => {
+        if(!resp.data){
+          this.findUser.error = 'error'
+        }
+        else{
+          const createDate = new Date(resp.data.createdAt)
+          this.findUser.user = {
+            pseudo: resp.data.username,
+            email: resp.data.email,
+            id: resp.data.id,
+            création: `${createDate}`.slice(0, 24)
           }
-        })
-        .then(resp => {
-          if(!resp.data){
-            this.findUser.error = 'error'
-          }
-          else{
-            this.findUser.user = {
-              pseudo: resp.data.username,
-              email: resp.data.email,
-              id: resp.data.id,
-              création: resp.data.createdAt
+          this.findUser.error = ''
+
+          axios.get('http://localhost:3000/api/auth/' + this.findUser.user.id + '/messages', {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer' + ' ' + this.token
             }
-            this.findUser.error = ''
+          })
+          .then(response => {
+            for (let message of response.data){
+              this.findUser.messages.push(message)
+            }
+          })
+          .catch(console.error())
 
-            axios.get('http://localhost:3000/api/auth/' + this.findUser.user.id + '/messages', {
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer' + ' ' + this.token
-              }
-            })
-            .then(response => {
-              for (let message of response.data){
-                this.findUser.messages.push(message)
-              }
-            })
-            .catch(console.error())
-
-            axios.get('http://localhost:3000/api/auth/' + this.findUser.user.id + '/coms', {
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer' + ' ' + this.token
-              }
-            })
-            .then(response => {
-              for (let com of response.data){
-                this.findUser.comments.push(com)
-              } 
-            })
-          }
-        })
-        .catch(console.error())
+          axios.get('http://localhost:3000/api/auth/' + this.findUser.user.id + '/coms', {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer' + ' ' + this.token
+            }
+          })
+          .then(response => {
+            for (let com of response.data){
+              this.findUser.comments.push(com)
+            } 
+          })
+        }
+      })
+      .catch(console.error())
     },
     deleteUser(){
       axios.delete('http://localhost:3000/api/auth/' + this.findUser.user.id, {
@@ -180,7 +181,7 @@ export default {
         comments: [],
         error: ''
       }
-    }
+    },
   }
 }
 </script>
@@ -192,6 +193,9 @@ export default {
 }
 
 .userInfo{
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
   border: solid black 2px;
   border-radius: 10px;
   max-width: 30%;
@@ -216,6 +220,6 @@ export default {
 }
 
 .profil{
-margin-top: 3rem;
+  margin-top: 3rem;
 }
 </style>

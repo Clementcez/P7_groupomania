@@ -9,21 +9,24 @@
           <a v-if="isLogged" @click="logout" href=""> Déconnexion</a>
         </div>
         <router-view @logout="logout" @login="logged"/>
+        <Footer v-bind:islogged='0'/>
     </div>
   </div>
 </template>
 
 <script>
 
+import Footer from '@/components/Footer.vue'
+
 export default {
   name: 'App',
+  components: {
+    Footer
+  },
   data () {
     return {
       isLogged: ''
     }
-  },
-  beforeMount() {
- 	window.addEventListener('beforeunload', this.logout)
   },
   methods: {
     logged(){
@@ -31,10 +34,13 @@ export default {
     },
     logout() {
       localStorage.clear()
-      this.isLogged = ''
+      this.isLogged = 0
       this.$router.push('/connexion')
     },
-  }
+  },
+  beforeMount() {
+ 	  window.addEventListener('beforeunload', this.logout)
+  },
 }
 </script>
 

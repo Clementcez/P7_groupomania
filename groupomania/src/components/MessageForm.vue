@@ -1,9 +1,15 @@
 <template>
-  <div id="messageForm">
-    <label for="content">Nouveau message</label>
-    <input id="content" type="text" name="content">
-    <input id="file" type="file" ref="file" v-on:change="handleFileUpload">
-    <input v-on:click="submitPost" type="submit"  value="Ajouter">
+  <div>
+    <div class="header">
+      <img src="../assets/icon.png" alt="logo groupomania">
+      <h1>Bonjour {{ username }}, dite quelque chose !</h1>
+    </div>
+    <form id="messageForm" @submit.prevent="submitPost">
+      <input id="content" type="text" name="content" value="" placeholder="Message"/>
+      <label for="file" class="labelFile">Image</label>
+      <input id="file" type="file" ref="file" accept="image/png, image/jpeg, image/gif" v-on:change="handleFileUpload">
+      <button type="submit">Ajouter</button>
+    </form>
   </div>
 </template>
 
@@ -17,6 +23,7 @@ export default {
     return {
       userId: '',
       token: '',
+      username: '',
       file: ''
     }
   },
@@ -24,6 +31,19 @@ export default {
     const user = JSON.parse(localStorage.getItem('user'))
     this.userId = user.userId
     this.token = user.token
+
+    axios.get('http://localhost:3000/api/auth/' + this.userId,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: 'Bearer' + ' ' + this.token
+          }
+        })
+    .then(response => {
+      this.username = response.data.username
+    })
+    .catch( console.error() )
+
   },
   methods: {
     handleFileUpload () {
@@ -52,3 +72,68 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+.header{
+  display: flex;
+  align-items: center;
+  margin: 2rem 0 1rem 10rem;
+}
+
+#content{
+  width: 50%;
+  border-radius: 5px;
+  margin-right: 1rem;
+  font-size: 1.3rem;
+}
+
+#file{
+  width: auto;
+  display: none;
+}
+
+.labelFile {
+  display: inline-block;
+  width: 6rem;
+  height: 2rem;
+  padding-top: 0.6rem;
+  font-size: 1rem;
+  opacity: 1;
+  cursor: pointer;
+  border: unset;
+  border-radius: 0 20px 0 20px;
+  box-shadow: 5px 5px 15px -3px rgba(0,0,0,0.75);
+  background: linear-gradient(90deg, rgba(54,84,130,1) 1%, #D1515A 30%);
+  margin: 0 1.5rem 1.5rem 1.5rem;
+  transition: 0.3s;
+  color: white;
+  font-weight: bold;
+}
+
+.labelFile:hover {
+  border-radius: 20px 0 20px 0;
+  box-shadow: 8px 8px 15px -3px rgba(0,0,0,0.75);
+}
+
+button{
+  width: 6rem;
+  opacity: 1;
+  cursor: pointer;
+  border: unset;
+  font-size: 1rem;
+  border-radius: 0 20px 0 20px;
+  box-shadow: 5px 5px 15px -3px rgba(0,0,0,0.75);
+  background: linear-gradient(90deg, rgba(54,84,130,1) 1%, #D1515A 30%);
+  margin: 0 1.5rem 1.5rem 1.5rem;
+  transition: 0.3s;
+  color: white;
+  font-weight: bold;
+}
+
+button:hover{
+  border-radius: 20px 0 20px 0;
+  box-shadow: 8px 8px 15px -3px rgba(0,0,0,0.75);
+}
+
+</style>

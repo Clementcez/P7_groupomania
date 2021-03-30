@@ -41,8 +41,7 @@ export default {
           this.$router.push('/')
         })
         .catch( error => {
-          console.log(error)
-          this.message = error
+          this.message = error.response.data.error
         })
       }
   }
@@ -53,6 +52,7 @@ export default {
 .loginBlock{
   display: flex;
   justify-content: center;
+  box-shadow: 5px 5px 15px -3px rgba(0,0,0,0.75);
   transition-duration: 0.5s;
   width: 30%;
   margin: 2rem 0 4rem 0;

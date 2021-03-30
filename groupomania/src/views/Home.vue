@@ -1,16 +1,266 @@
 <template>
-  <div class="home">
-    <Center/>
+  <div>
+    <MessageForm @new-message='newMessage'/>
+    <div class="messages">
+      <div class="message" v-for="item in messages" :key="item.message.id">
+        <div> 
+          <h2 class='titlePost'>{{ item.message.title }}<span class='date'>{{ item.message.date }}</span></h2>
+          <form v-if="userId == item.message.userId">
+            <button v-on:click.prevent="deletePost(item.message.id)" type="submit">Supprimer le message</button>
+            <button v-on:click.prevent="update = 1">Modifier le message</button>
+          </form>
+        </div>
+
+        <p v-if="update !== 1">{{ item.message.content }}</p>
+        <img v-if='item.message.attachement' :src="item.message.attachement" alt="">
+        <UpdatePost :idPost="item.message.id" :textToUpdate='item.message.content' v-if="update == 1"/>
+
+        <form @submit.prevent="addComment(item.message.id)">
+          <input :id='item.message.id' type="text" placeholder="Commenter"/>
+        </form>
+
+        <div class='flexCom' v-if="item.commentaires">
+          <div class="com" v-for="com in item.commentaires" :key="com.date">
+            <p class='titleCom'>{{ com.username }}<span class='date'>{{ com.date }}</span></p>
+            <p>{{ com.content }}</p>
+            <button class="slideButton" v-if="userId == com.userId" v-on:click.prevent="deleteCom(com.postId,com.comId)" type="submit">
+              Supprimer le commentaire
+            </button>  
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import Center from '@/components/Center.vue'
+import MessageForm from '@/components/MessageForm.vue'
+import UpdatePost from '@/components/UpdatePost.vue'
+import axios from 'axios'
 
 export default {
-  name: 'Home',
-  components: {
-    Center
+  name: 'Center',
+    components: {
+      MessageForm,
+      UpdatePost
   },
+  data: function () {
+    return {
+      userId: '',
+      admin: '',
+      token: '',
+      messages: '',
+      update: '',
+      textToUpdate: ''
+    }
+  },
+  beforeMount() {
+      const user = JSON.parse(localStorage.getItem('user'))
+      this.userId = user.userId
+      this.token = user.token
+      this.admin = user.admin
+  },
+  mounted() {
+   this.findMessage()
+  },
+  methods: {
+    newMessage() {
+      this.findMessage()
+    },
+    findMessage() {
+      this.messages = []
+      axios.get('http://localhost:3000/api/messages', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + ' ' + this.token
+        }
+      })
+      .then(response =>{
+        console.log(response.data)
+        for (let item of response.data.messages){
+          const postDate = new Date(item.createdAt)
+          const post = {
+            message: {
+              id: item.id,
+              userId: item.idUSER,
+              title: item.title,
+              content: item.content,
+              attachement: item.attachement,
+              date: `${postDate}`.slice(0, 24)
+            }
+          }
+          if(item.Comments){
+            const com = {
+              commentaires: {}
+            }
+            for (let item of item.Comments){
+              const comDate = new Date(item.createdAt)
+              const coms = {
+                [item.id]: {
+                  userId: item.idUSER,
+                  postId: item.idMESSAGE,
+                  comId: item.id,
+                  username: item.User.username,
+                  content: item.comContent,
+                  date:  `${comDate}`.slice(0, 24)
+                }
+              }
+              Object.assign(com.commentaires, coms)
+            }
+            Object.assign(post, com)
+          }
+          this.messages.push(post)
+        }
+      })
+      .catch(console.error())
+    },
+    addComment(messageId) {
+      const data = {
+        messageId: messageId,
+        userId: this.userId,
+        comContent: document.getElementById(messageId).value
+      }
+      axios.post('http://localhost:3000/api/messages/' + messageId + '/coms', data, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + ' ' + this.token
+        }
+      })
+      .then( this.findMessage() )
+      .catch( console.error() )
+    },
+    deletePost(postId){
+      axios.delete('http://localhost:3000/api/messages/' + postId, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + ' ' + this.token
+        }
+      })
+      .then( this.findMessage() )
+      .catch( console.error() )
+    },
+    deleteCom(postId, comId){
+      axios.delete('http://localhost:3000/api/messages/' + postId + '/coms/' + comId, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + ' ' + this.token
+        }
+      })
+      .then( this.findMessage() )
+      .catch( console.error() )
+    }
+  }
 }
 </script>
+
+<style scoped>
+
+p{
+  text-indent: 1rem;
+  margin: 1rem;
+}
+
+.messages{
+  display: flex;
+  flex-direction: column;
+  text-align: initial;
+  width: auto;
+  margin: 2rem 5rem 5rem 5rem;
+}
+
+.message{
+  border: solid black 2px;
+  border-radius: 10px;
+  margin: 1rem;
+  box-shadow: 5px 5px 15px -3px rgba(0,0,0,0.75);
+}
+
+.titlePost{
+  text-align: initial;
+  text-indent: initial;
+  text-decoration: underline;
+  margin: 2rem;
+}
+
+.message > img{
+  width: 30%;
+  margin: 1rem;
+}
+
+.titleCom{
+  text-indent: initial;
+}
+
+.flexCom{
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.com{
+  position: relative;
+  width: 60%;
+  font-style: italic;
+  border: solid black 2px;
+  border-radius: 10px;
+  margin: 1rem;
+  box-shadow: 5px 5px 15px -3px rgba(0,0,0,0.75);
+}
+
+.date{
+  font-weight: initial;
+  margin-left: 1rem;
+  font-style: italic;
+  color: #a2a2a2;
+  font-size: small;
+}
+
+input{
+  width: 40%;
+  margin: 1rem;
+  border-radius: 6px;
+  text-indent: 1rem;
+}
+
+.inputUpdate{
+  width: 60%;
+  height: 1.5rem;
+  font-size: 1.2rem;
+}
+
+button{
+  width: auto;
+  opacity: 1;
+  cursor: pointer;
+  border: unset;
+  font-size: 1rem;
+  border-radius: 0 20px 0 20px;
+  box-shadow: 5px 5px 15px -3px rgba(0,0,0,0.75);
+  background: linear-gradient(90deg, rgba(54,84,130,1) 1%, #D1515A 30%);
+  margin: 0 1.5rem 1.5rem 1.5rem;
+  transition: 0.3s;
+  color: white;
+  font-weight: bold;
+}
+
+button:hover{
+  border-radius: 20px 0 20px 0;
+  box-shadow: 8px 8px 15px -3px rgba(0,0,0,0.75);
+}
+
+.slideButton{
+  position: absolute;
+  bottom: 0;
+  left: 97%;
+  right: 0;
+  width: 0;
+  overflow: hidden;
+  transition: 0.3s;
+  padding: initial;
+}
+
+.com:active .slideButton{
+  width: auto;
+}
+
+</style>
