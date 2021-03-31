@@ -41,7 +41,7 @@ export default {
 
 #nav a {
   transition-duration: 0.3s;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #2c3e50;
   text-decoration: unset;
