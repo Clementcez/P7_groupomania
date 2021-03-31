@@ -5,6 +5,7 @@
       <h1>Bonjour {{ username }}, dite quelque chose !</h1>
     </div>
     <form id="messageForm" @submit.prevent="submitPost">
+      <label class="lecteur" for="content">Nouveau message</label>
       <input id="content" type="text" name="content" value="" placeholder="Message"/>
       <div class="formButton">
         <label for="file" class="labelFile">Image</label>
@@ -153,6 +154,15 @@ button:hover{
   display: flex;
   align-items: center;
   margin-top: 1rem
+}
+
+.lecteur{
+  position: absolute;
+  left: -2px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 @media (max-width: 1024px) {

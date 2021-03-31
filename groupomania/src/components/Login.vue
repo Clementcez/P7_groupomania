@@ -2,10 +2,10 @@
  <div class="loginBlock">
    <form class="login" @submit.prevent="login">
      <h1 class="authTitle">Connexion</h1>
-     <label>Email :</label>
-     <input required v-model="email" type="email" placeholder="Email"/>
-     <label>Mot de passe :</label>
-     <input required v-model="password" type="password" placeholder="Password"/>
+     <label for="email connection">Email :</label>
+     <input required v-model="email" id="email connection" type="email" name="email connection" placeholder="Email"/>
+     <label for="password connection">Mot de passe :</label>
+     <input required v-model="password" id="password connection" name="password connection" type="password" placeholder="Password"/>
      <button type="submit">Se connecter</button>
      <p v-if="message">{{ message }}</p>
    </form>

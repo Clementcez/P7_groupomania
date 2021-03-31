@@ -22,7 +22,8 @@
         <img v-if='item.message.attachement' :src="item.message.attachement" alt="">
 
         <form @submit.prevent="addComment(item.message.id)">
-          <input :id='item.message.id' type="text" placeholder="Commenter"/>
+          <label class="lecteur" for="comment">Nouveau commentaire</label>
+          <input :id='item.message.id' type="text" name="comment" placeholder="Commenter"/>
         </form>
 
         <div class='flexCom' v-if="item.commentaires">
@@ -274,6 +275,15 @@ button:hover{
   overflow: hidden;
   transition: 0.3s;
   padding: initial;
+}
+
+.lecteur{
+  position: absolute;
+  left: -2px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 @media (max-width: 1024px) {

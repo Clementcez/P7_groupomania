@@ -10,9 +10,9 @@
     <div class="admin" v-if="admin === true">
 
       <form @submit.prevent="findProfil">
-        <p>Trouver un profil :</p>
-        <label>Pseudo : </label>
-        <input required v-model="findUser.username" type="text" placeholder="Pseudo"/>
+        <label for="pseudo">Rechercher un profil : 
+        <input required v-model="findUser.username" id="pseudo" name="pseudo" type="text" placeholder="Pseudo"/>
+        </label>
         <button type="submit">Rechercher</button>
       </form>
 

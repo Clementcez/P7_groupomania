@@ -2,12 +2,12 @@
  <div class="signupBlock">
    <form class="signup" @submit.prevent="signup">
      <h1 class="authTitle">Inscription</h1>
-     <label>Email :</label>
-     <input required v-model="email" type="email" placeholder="Email"/>
-      <label>Pseudo :</label>
-     <input required v-model="username" type="text" placeholder="Pseudo"/>
-     <label>Mot de passe :</label>
-     <input required v-model="password" type="password" placeholder="Password"/>
+     <label for="email inscription">Email :</label>
+     <input required v-model="email" id="email inscription" name="email inscription" type="email" placeholder="Email"/>
+      <label for="pseudo inscription">Pseudo :</label>
+     <input required v-model="username" id="pseudo inscription" name="pseudo inscription" type="text" placeholder="Pseudo"/>
+     <label for="password inscription">Mot de passe :</label>
+     <input required v-model="password" name="password inscription" id="password inscription" type="password" placeholder="Password"/>
      <button type="submit">S'inscrire</button>
      <p v-if="message">{{ message }}</p>
    </form>
