@@ -89,8 +89,8 @@ export default {
       }
     })
     .then(resp => {
-          this.username = resp.data.username
-          this.email = resp.data.email
+        this.username = resp.data.username
+        this.email = resp.data.email
     })
     .catch(console.error())
   },
@@ -105,7 +105,8 @@ export default {
         })
       .then(
         alert('Profil supprimé'),
-        this.$emit('logout')
+          localStorage.clear(),
+          this.$router.push('/connexion')
         )
       }
       else{
@@ -171,7 +172,10 @@ export default {
             Authorization: 'Bearer' + ' ' + this.token
           }
         })
-      .then(alert('Profil supprimé'))
+      .then(
+        alert('Profil supprimé'),
+        this.cancelSearch()
+      )
     },
     cancelSearch() {
       this.findUser = {

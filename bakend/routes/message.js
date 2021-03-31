@@ -11,6 +11,5 @@ router.put('/:id', auth, multer, ctrlMess.modifMessage);
 router.delete('/:id', auth, ctrlMess.deleteMessage);
 router.delete('/:id/coms/:id', auth, ctrlMess.deleteComment);
 router.get('/', auth, ctrlMess.readAllPosts);
-router.get('/:id/coms', auth, ctrlMess.readAllComments);
 
 module.exports = router;

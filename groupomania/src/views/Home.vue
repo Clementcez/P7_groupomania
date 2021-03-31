@@ -1,19 +1,25 @@
 <template>
   <div>
-    <MessageForm @new-message='newMessage'/>
+    <MessageForm/>
     <div class="messages">
       <div class="message" v-for="item in messages" :key="item.message.id">
         <div> 
           <h2 class='titlePost'>{{ item.message.title }}<span class='date'>{{ item.message.date }}</span></h2>
-          <form v-if="userId == item.message.userId">
+          <form v-if="userId == item.message.userId || admin">
             <button v-on:click.prevent="deletePost(item.message.id)" type="submit">Supprimer le message</button>
-            <button v-on:click.prevent="update = 1">Modifier le message</button>
+            <button v-if="userId == item.message.userId" v-on:click.prevent="update = item.message.id">
+              Modifier le message
+            </button>
           </form>
         </div>
 
-        <p v-if="update !== 1">{{ item.message.content }}</p>
+        <p v-if="update !== item.message.id">{{ item.message.content }}</p>
+        <form v-if="update == item.message.id" @submit.prevent="updatePost(item.message.id, item.message.inputId)">
+          <input :id="item.message.inputId" type="text" :value="item.message.content">
+          <button type="submit">Modifier</button>
+          <button v-on:click.prevent="update = 0">Annuler modification</button>
+        </form>
         <img v-if='item.message.attachement' :src="item.message.attachement" alt="">
-        <UpdatePost :idPost="item.message.id" :textToUpdate='item.message.content' v-if="update == 1"/>
 
         <form @submit.prevent="addComment(item.message.id)">
           <input :id='item.message.id' type="text" placeholder="Commenter"/>
@@ -23,7 +29,7 @@
           <div class="com" v-for="com in item.commentaires" :key="com.date">
             <p class='titleCom'>{{ com.username }}<span class='date'>{{ com.date }}</span></p>
             <p>{{ com.content }}</p>
-            <button class="slideButton" v-if="userId == com.userId" v-on:click.prevent="deleteCom(com.postId,com.comId)" type="submit">
+            <button class="delComButton" v-if="userId == com.userId || admin" v-on:click.prevent="deleteCom(com.postId,com.comId)" type="submit">
               Supprimer le commentaire
             </button>  
           </div>
@@ -36,14 +42,12 @@
 
 <script>
 import MessageForm from '@/components/MessageForm.vue'
-import UpdatePost from '@/components/UpdatePost.vue'
 import axios from 'axios'
 
 export default {
   name: 'Center',
     components: {
-      MessageForm,
-      UpdatePost
+      MessageForm
   },
   data: function () {
     return {
@@ -51,8 +55,7 @@ export default {
       admin: '',
       token: '',
       messages: '',
-      update: '',
-      textToUpdate: ''
+      update: 0,
     }
   },
   beforeMount() {
@@ -82,6 +85,7 @@ export default {
           const post = {
             message: {
               id: item.id,
+              inputId: 'a' + item.id,
               userId: item.idUSER,
               title: item.title,
               content: item.content,
@@ -99,6 +103,7 @@ export default {
                 [item.id]: {
                   userId: item.idUSER,
                   postId: item.idMESSAGE,
+                  inputId: 'b' + item.id,
                   comId: item.id,
                   username: item.User.username,
                   content: item.comContent,
@@ -111,6 +116,7 @@ export default {
           }
           this.messages.push(post)
         }
+        console.log(this.messages)
       })
       .catch(console.error())
     },
@@ -127,6 +133,19 @@ export default {
         }
       })
       .then( this.findMessage() )
+      .catch( console.error() )
+    },
+    updatePost(messageId, inputId){
+      const data = {
+        content: document.getElementById(inputId).value
+      }
+      axios.put('http://localhost:3000/api/messages/' + messageId, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + ' ' + this.token
+        }
+      })
+      .then( this.update = 0, this.findMessage() )
       .catch( console.error() )
     },
     deletePost(postId){
@@ -247,19 +266,14 @@ button:hover{
   box-shadow: 8px 8px 15px -3px rgba(0,0,0,0.75);
 }
 
-.slideButton{
+.delComButton{
   position: absolute;
   bottom: 0;
   left: 97%;
   right: 0;
-  width: 0;
   overflow: hidden;
   transition: 0.3s;
   padding: initial;
-}
-
-.com:hover .slideButton{
-  width: auto;
 }
 
 </style>

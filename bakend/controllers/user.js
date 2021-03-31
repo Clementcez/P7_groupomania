@@ -77,13 +77,13 @@ exports.findWithId = (req, res, next ) => {
     .catch(error => res.status(400).json({ error }));
 };
 
-exports.findAllMyMessages = (req, res, next) => {
+exports.findAllMessages = (req, res, next) => {
     Message.findAll ({ where: { idUSER: req.params.id } })
     .then(messages => res.status(200).json(messages))
     .catch(error => res.status(400).json({ error }));
 };
 
-exports.findAllMyComments = (req, res, next) => {
+exports.findAllComments = (req, res, next) => {
     Comment.findAll ({ where: { idUSER: req.params.id } })
     .then(comments => res.status(200).json(comments))
     .catch(error => res.status(400).json({ error }));

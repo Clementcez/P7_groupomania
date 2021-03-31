@@ -31,18 +31,11 @@ exports.createComment = (req, res, next) =>{
 exports.modifMessage = (req, res, next) => {
     Message.findOne ({ where: { id: req.params.id} })
     .then( response => {
-        if(response.file){
-            const filename = message.attachement.split('/img/')[1];
-            fs.unlink(`img/${filename}`, (err) => {
-                if (err) throw err;
-            })
-        }
         Message.update({
-            content: req.body.content ? req.body.content : message.content,
-            attachement: `${req.protocol}://${req.get('host')}/img/${req.file.filename}`
+            content: req.body.content ? req.body.content : response.content
         },
-            { where: { id: req.params.id} 
-        })
+        { where: { id: req.params.id}}
+        )
         .then(() => res.status(200).json({ message: 'objet modifié !'}))
         .catch(error => res.status(500).json({ error }))
     })

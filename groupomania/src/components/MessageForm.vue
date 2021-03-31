@@ -9,6 +9,7 @@
       <label for="file" class="labelFile">Image</label>
       <input id="file" type="file" ref="file" accept="image/png, image/jpeg, image/gif" v-on:change="handleFileUpload">
       <button type="submit">Ajouter</button>
+      <p>{{ file.name }}</p>
     </form>
   </div>
 </template>
@@ -64,7 +65,7 @@ export default {
         })
         .then(response => {
           if(response.status == 201){
-            this.$emit('new-message')
+            window.location.reload()
           }
         })
         .catch( console.error() )
@@ -75,6 +76,13 @@ export default {
 
 <style scoped>
 
+#messageForm{
+  display: flex;
+  justify-content: space-around;
+  width: 75%;
+  margin: auto;
+}
+
 .header{
   display: flex;
   align-items: center;
@@ -83,9 +91,11 @@ export default {
 
 #content{
   width: 50%;
+  height: 2.5rem;
   border-radius: 5px;
   margin-right: 1rem;
   font-size: 1.3rem;
+  text-indent: 1rem;
 }
 
 #file{
