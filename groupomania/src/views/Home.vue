@@ -69,9 +69,6 @@ export default {
    this.findMessage()
   },
   methods: {
-    newMessage() {
-      this.findMessage()
-    },
     findMessage() {
       this.messages = []
       axios.get('http://localhost:3000/api/messages', {
@@ -133,7 +130,11 @@ export default {
           Authorization: 'Bearer' + ' ' + this.token
         }
       })
-      .then( this.findMessage() )
+      .then( response => {
+        if(response.status == 201){
+            this.findMessage()
+        }
+      })
       .catch( console.error() )
     },
     updatePost(messageId, inputId){
@@ -146,7 +147,12 @@ export default {
           Authorization: 'Bearer' + ' ' + this.token
         }
       })
-      .then( this.update = 0, this.findMessage() )
+      .then( response => {
+        if(response.status == 200){
+          this.update = 0
+          this.findMessage()
+        }
+      })
       .catch( console.error() )
     },
     deletePost(postId){
@@ -156,7 +162,11 @@ export default {
           Authorization: 'Bearer' + ' ' + this.token
         }
       })
-      .then( this.findMessage() )
+      .then( response => {
+        if(response.status == 200){
+            this.findMessage() 
+        } 
+      })
       .catch( console.error() )
     },
     deleteCom(postId, comId){
@@ -166,7 +176,11 @@ export default {
           Authorization: 'Bearer' + ' ' + this.token
         }
       })
-      .then( this.findMessage() )
+      .then( response => {
+        if(response.status == 200){
+            this.findMessage() 
+        } 
+      })
       .catch( console.error() )
     }
   }

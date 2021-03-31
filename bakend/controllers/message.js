@@ -51,8 +51,12 @@ exports.deleteMessage = (req, res, next) => {
                 if (err) throw err;
             })
         }
-        Message.destroy ({ where: { id: response.id} })
-        .then(() => res.status(200).json({ message: 'objet supprimé !'}))
+        Comment.destroy ({ where: { idMESSAGE : response.id}})
+        .then(() => {
+            Message.destroy ({ where: { id: response.id} })
+            .then(() => res.status(200).json({ message: 'objet supprimé !'}))
+            .catch(error => res.status(500).json({ error }))
+        })
         .catch(error => res.status(500).json({ error }))
     })
     .catch(error =>res.status(500).json({ error }))
@@ -80,10 +84,4 @@ exports.readAllPosts = (req, res, next) => {
         console.log(error),
         res.status(400).json({ error })
     });
-};
-
-exports.readAllComments = (req, res ,next) => {
-    Comment.findAll ({ where: { idMESSAGE: req.params.id } })
-    .then(comments => res.status(200).json(comments))
-    .catch(error => res.status(400).json({ error }));
 };
