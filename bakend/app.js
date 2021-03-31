@@ -2,7 +2,6 @@ const express = require("express");
 const path = require('path');
 const helmet = require("helmet");
 const xss = require('xss-clean')
-const mongoSanitize = require('express-mongo-sanitize');
 
 const messageRoutes = require('./routes/message');
 const userRoutes = require('./routes/user');
@@ -15,7 +14,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(mongoSanitize());
 app.use(xss())
 app.use(helmet());
 
