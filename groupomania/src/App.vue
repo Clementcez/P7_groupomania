@@ -52,4 +52,18 @@ export default {
   margin-bottom: auto;
   width: 40%;
 }
+
+@media (max-width: 1024px) {
+
+  #app{
+    width: 95%;
+    min-height: 97vh;
+    margin: 0 auto 2rem auto;
+    font-size: small;
+  }
+
+  #app > img {
+  width: 60%;
+  }
+} 
 </style>

@@ -3,7 +3,7 @@
     <MessageForm/>
     <div class="messages">
       <div class="message" v-for="item in messages" :key="item.message.id">
-        <div> 
+        <div class="mediaQ"> 
           <h2 class='titlePost'>{{ item.message.title }}<span class='date'>{{ item.message.date }}</span></h2>
           <form v-if="userId == item.message.userId || admin">
             <button v-on:click.prevent="deletePost(item.message.id)" type="submit">Supprimer le message</button>
@@ -269,11 +269,48 @@ button:hover{
 .delComButton{
   position: absolute;
   bottom: 0;
-  left: 97%;
+  left: 100%;
   right: 0;
   overflow: hidden;
   transition: 0.3s;
   padding: initial;
+}
+
+@media (max-width: 1024px) {
+  .messages{
+    margin: unset;
+  }
+
+  .message > img{
+    width: 60%;
+    margin: 1rem;
+  }
+
+  button{
+    margin: 0 0.5rem 0.5rem 0.5rem;
+    font-size: small;
+  }
+
+  input{
+    width: 80%;
+  }
+
+  p{
+    font-size: large;
+  }
+
+  .titlePost{
+    margin: 1rem;
+  }
+
+  .mediaQ{
+    margin-bottom: 2rem;
+  }
+
+  .delComButton{
+    width: 50%;
+    height: 40%;
+  }
 }
 
 </style>

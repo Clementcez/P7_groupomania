@@ -6,10 +6,12 @@
     </div>
     <form id="messageForm" @submit.prevent="submitPost">
       <input id="content" type="text" name="content" value="" placeholder="Message"/>
-      <label for="file" class="labelFile">Image</label>
-      <input id="file" type="file" ref="file" accept="image/png, image/jpeg, image/gif" v-on:change="handleFileUpload">
-      <button type="submit">Ajouter</button>
-      <p>{{ file.name }}</p>
+      <div class="mediaQ">
+        <label for="file" class="labelFile">Image</label>
+        <input id="file" type="file" ref="file" accept="image/png, image/jpeg, image/gif" v-on:change="handleFileUpload">
+        <button type="submit">Ajouter</button>
+        <p>{{ file.name }}</p>
+      </div>
     </form>
   </div>
 </template>
@@ -144,6 +146,42 @@ button{
 button:hover{
   border-radius: 20px 0 20px 0;
   box-shadow: 8px 8px 15px -3px rgba(0,0,0,0.75);
+}
+
+@media (max-width: 1024px) {
+  .header{
+    margin: auto;
+    justify-content: center;
+  }
+
+  .header > img{
+    display: none;
+  }
+
+  #messageForm{
+    display: inline-block;
+    width: 90%;
+  }
+
+  #content{
+    width: 100%;
+    height: 2rem;
+    border-radius: 5px;
+    margin: auto;
+    font-size: 1rem;
+    text-indent: 1rem;
+  }
+
+  .mediaQ{
+    display: flex;
+    align-items: center;
+    margin-top: 1rem
+  }
+
+  .labelFile{
+    height: 1.6rem;
+    padding-top: 0.4rem;
+  }
 }
 
 </style>

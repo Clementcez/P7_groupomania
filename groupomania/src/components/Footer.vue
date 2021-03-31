@@ -10,7 +10,7 @@
           <router-link v-if="!logged" to="/connexion">Connexion</router-link><span v-if="logged"> | </span>
           <a v-if="logged" @click="logout" href=""> Déconnexion</a>
         </div>
-        <div>
+        <div class="footer">
             <p>CONNECT-E ©</p>
         </div>
     </footer>
@@ -77,5 +77,22 @@ footer{
 #nav a.router-link-exact-active {
     color: #D1515A;
     text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+
+    footer{
+        position: relative;
+        height: 7rem;
+    }
+
+    .footer{
+        margin-top: 2rem;
+    }
+
+    #nav{
+        position: absolute;
+        bottom: 3rem;
+    }
 }
 </style>

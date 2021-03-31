@@ -92,11 +92,36 @@ export default {
   font-size: 1rem;
   transition-duration: 0.5s;
   border-radius: 10px 0 10px 0;
+  text-indent: 1rem;
 }
 
 .signup > input:focus{
   height: 3rem;
   font-size: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .signupBlock{
+    width: auto;
+    height: 50vh;
+  }
+
+  .signup{
+    width: 60%;
+  }
+
+  .signupBlock:hover{
+    width: initial;
+  }
+
+  .signup > label{
+    font-size: 1;
+  }
+
+  .signup > input:focus{
+    height: 2rem;
+    font-size: 1;
+  }
 }
 
 </style>

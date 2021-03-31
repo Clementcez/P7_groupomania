@@ -80,10 +80,35 @@ export default {
   font-size: 1rem;
   transition-duration: 0.5s;
   border-radius: 10px 0 10px 0;
+  text-indent: 1rem;
 }
 
 .login > input:focus{
   height: 3rem;
   font-size: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .loginBlock{
+    width: auto;
+    height: 40vh;
+  }
+
+  .login{
+    width: 60%;
+  }
+
+  .loginBlock:hover{
+    width: initial;
+  }
+
+  .login > label{
+  font-size: 1;
+  }
+
+  .login > input:focus{
+    height: 2rem;
+    font-size: 1;
+  }
 }
 </style>

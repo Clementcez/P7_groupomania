@@ -52,4 +52,18 @@ button:hover{
   box-shadow: 8px 8px 15px -3px rgba(0,0,0,0.75);
 }
 
+@media (max-width: 1024px) {
+  .auth{
+    flex-direction: column;
+    width: 70%;
+    height: auto;
+  }
+
+  button{
+    height: 2rem;
+    font-size: small;
+    margin: unset;
+  }
+}
+
 </style>
