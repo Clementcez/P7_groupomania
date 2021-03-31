@@ -87,12 +87,13 @@ footer{
     }
 
     .footer{
-        margin-top: 2rem;
+        margin-top: 3rem;
     }
 
     #nav{
         position: absolute;
-        bottom: 3rem;
+        bottom: 2rem;
+        font-size: 1.2rem;
     }
 }
 </style>
