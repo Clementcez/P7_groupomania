@@ -6,7 +6,7 @@
     </div>
     <form id="messageForm" @submit.prevent="submitPost">
       <input id="content" type="text" name="content" value="" placeholder="Message"/>
-      <div class="mediaQ">
+      <div class="formButton">
         <label for="file" class="labelFile">Image</label>
         <input id="file" type="file" ref="file" accept="image/png, image/jpeg, image/gif" v-on:change="handleFileUpload">
         <button type="submit">Ajouter</button>
@@ -81,6 +81,7 @@ export default {
 #messageForm{
   display: flex;
   justify-content: space-around;
+  align-items: center;
   width: 75%;
   margin: auto;
 }
@@ -148,6 +149,12 @@ button:hover{
   box-shadow: 8px 8px 15px -3px rgba(0,0,0,0.75);
 }
 
+.formButton{
+  display: flex;
+  align-items: center;
+  margin-top: 1rem
+}
+
 @media (max-width: 1024px) {
   .header{
     margin: auto;
@@ -170,12 +177,6 @@ button:hover{
     margin: auto;
     font-size: 1rem;
     text-indent: 1rem;
-  }
-
-  .mediaQ{
-    display: flex;
-    align-items: center;
-    margin-top: 1rem
   }
 
   .labelFile{
