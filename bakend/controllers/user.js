@@ -48,11 +48,12 @@ exports.logIn = (req, res, next) => {
                         if(!valid) {
                             return res.status(401).json({error: 'Mauvais mot de passe !'})
                         }
-                        res.status(200).json({
-                            userId: user.id,
-                            admin: user.isAdmin,
+                        res.status(200).json({                            
                             token: webToken.sign(
-                                { userId: user.id },
+                                { 
+                                    userId: user.id,
+                                    admin: user.isAdmin
+                                },
                                 'TOKEN_SECRET',
                                 { expiresIn: '24h' }
                             )
@@ -62,6 +63,22 @@ exports.logIn = (req, res, next) => {
             }
         })
         .catch(error => res.status(500).json({ error }))
+    }
+};
+
+exports.sendToken = (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decodeToken = webToken.verify(token, 'TOKEN_SECRET');
+        const userId = decodeToken.userId;
+        if(req.body.userId && req.body.userId != userId) {
+            throw 'User ID non valable !';
+        } else {
+            res.status(200).json(decodeToken);
+        }
+    } catch (error) {
+        res.status(401).json({ error: error | 'Requete non authentifié !' }),
+        console.log(error)
     }
 };
 

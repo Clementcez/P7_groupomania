@@ -7,6 +7,8 @@ const auth = require('../middleware/auth');
 router.post('/signup', userCtrl.signUp );
 router.post('/login',userCtrl.logIn );
 
+router.post('/', auth, userCtrl.sendToken );
+
 router.get('/profil/:username', auth, userCtrl.findWithUsername );
 router.get('/:id', auth, userCtrl.findWithId );
 router.get('/:id/messages', auth, userCtrl.findAllMessages );

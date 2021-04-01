@@ -61,9 +61,18 @@ export default {
   },
   beforeMount() {
       const user = JSON.parse(localStorage.getItem('user'))
-      this.userId = user.userId
       this.token = user.token
-      this.admin = user.admin
+
+      axios.post('http://localhost:3000/api/auth', user, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + ' ' + this.token
+        }
+      })
+      .then(response => {
+        this.userId = response.data.userId
+        this.admin = response.data.admin
+      })
   },
   mounted() {
    this.findMessage()

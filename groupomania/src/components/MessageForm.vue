@@ -33,21 +33,30 @@ export default {
   },
   beforeMount() {
     const user = JSON.parse(localStorage.getItem('user'))
-    this.userId = user.userId
     this.token = user.token
 
-    axios.get('http://localhost:3000/api/auth/' + this.userId,
+    axios.post('http://localhost:3000/api/auth', user, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer' + ' ' + this.token
+      }
+    })
+    .then(response => {
+      this.userId = response.data.userId
+      this.admin = response.data.admin
+
+      axios.get('http://localhost:3000/api/auth/' + response.data.userId,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: 'Bearer' + ' ' + this.token
           }
         })
-    .then(response => {
-      this.username = response.data.username
+      .then(response => {
+        this.username = response.data.username
+      })
+      .catch( console.error() )
     })
-    .catch( console.error() )
-
   },
   methods: {
     handleFileUpload () {

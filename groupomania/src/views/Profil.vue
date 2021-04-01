@@ -77,22 +77,30 @@ export default {
   },
   beforeMount() {
     const user = JSON.parse(localStorage.getItem('user'))
-    this.userId = user.userId
-    this.admin = user.admin
     this.token = user.token
-  },
-  mounted () {
-    axios.get('http://localhost:3000/api/auth/' + this.userId, {
+
+    axios.post('http://localhost:3000/api/auth', user, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer' + ' ' + this.token
       }
     })
-    .then(resp => {
-        this.username = resp.data.username
-        this.email = resp.data.email
+    .then(response => {
+      this.userId = response.data.userId
+      this.admin = response.data.admin
+
+      axios.get('http://localhost:3000/api/auth/' + this.userId, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + ' ' + this.token
+        }
+      })
+      .then(resp => {
+          this.username = resp.data.username
+          this.email = resp.data.email
+      })
+      .catch(console.error())
     })
-    .catch(console.error())
   },
   methods: {
     deleteProfil () {

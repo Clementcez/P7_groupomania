@@ -40,12 +40,10 @@ export default {
 
       axios.post('http://localhost:3000/api/auth/signup', dataUser, headers)
         .then(res =>{
-            console.log(res.status)
             if(res.status == 201){
                 axios.post('http://localhost:3000/api/auth/login', dataUser, headers)
                 .then(resp =>{
                     localStorage.setItem('user', JSON.stringify( resp.data ))
-                    this.$emit('login')
                     this.$router.push('/')
                 })
             }
